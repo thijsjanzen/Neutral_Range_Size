@@ -1,0 +1,25 @@
+sudo: required
+language: cpp
+compiler: gcc
+
+addons:
+  apt:
+    sources:
+    - boost-latest
+    - ubuntu-toolchain-r-test
+    packages:
+    - libboost1.55-all-dev
+
+install: 
+  - sudo apt-get install -qq g++-5
+  - sudo update-alternatives --install /usr/bin/gcov gcov /usr/bin/gcov-5 90
+  - ./install_oclint.sh
+
+script: 
+  # Build and run
+  - qmake
+  - make
+  - ./Neutral_range_size
+  # OCLint
+  - ./do_oclint.sh
+

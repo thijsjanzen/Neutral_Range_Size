@@ -176,7 +176,9 @@ void fit_to_data(const GetParams& P) {
 
 
     // maximum number of iterations of the SMC algorithm
-    int maxIter = 50;
+ //   int maxIter = 50;
+    int maxIter = 2; // for Travis
+
     double sigma = 0.05;
 
     std::vector<double> Thresholds; //thresholds used for the ABC algorithm

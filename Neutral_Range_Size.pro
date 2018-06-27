@@ -30,6 +30,7 @@ HEADERS += \
     Particle.h
 
 SOURCES += \
+    main.cpp \
     GetParams.cpp \
     Simulation.cpp \
     mersenne.cpp \

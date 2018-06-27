@@ -25,7 +25,6 @@
 #include <boost/tokenizer.hpp>
 #include <numeric>
 
-
 //**********************************************************************************************************************************
 //														Simulation function
 //***************************************************************************************************************************
@@ -269,9 +268,6 @@ void write_to_file(const GetParams& P,
                name3,
                name4,
                P.Xmean, P.alpha, P.speciationRate, P.sampling, P.SoftBorder,
-               species,
-               P.emp_file_name,
-               curve,
                P.focalReplicate);
 
 }
@@ -307,8 +303,7 @@ std::vector <T> getUnique(const std::vector<T>& V) {
 template <typename T>
 std::vector<int> findMatches(const std::vector<T>& V, T target) {
 	std::vector<int> indices;
-	for(int i = 0; i < V.size(); ++i)
-	{
+	for(int i = 0; i < (int)V.size(); ++i) {
 		if(V[i] == target) indices.push_back(i);
 	}
 	return indices;
@@ -450,7 +445,6 @@ std::vector<double> readEmpiricalData(std::string file_name) {
 //***************************************************************************************************************************
 
 std::vector<double> calcCurve(const std::vector<int>& FinalResults,
-                              int gridSize,
                               int& numSpecies){
 	if(FinalResults[0] == -500) {
 		//pre-emptive exit
@@ -593,9 +587,6 @@ void output_all(std::vector<int> FinalResults,
                 double speciation,
                 double samp,
                 int SoftBorder,
-                int richness,
-                std::string emp_file_name,
-                std::vector<double> curve,
                 int replicate)
 
 {

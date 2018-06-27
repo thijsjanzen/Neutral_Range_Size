@@ -22,7 +22,9 @@ std::vector<double> readEmpiricalData(std::string file_name);
 double calcFitness(std::vector<double> emp, std::vector<double> Sim);
 
 std::vector<double> calcCurve(const std::vector<int>& FinalResults, int gridSize, int& numSpecies);
-std::vector<double> doSimulation(particle candidate, const GetParams& P, int& numSpecies);
+std::vector<double> doSimulation(particle candidate,
+                                 const GetParams& P,
+                                 int& numSpecies);
 
 void initialize_vectors(std::vector<int>& index,
                         std::vector<int>& result,
@@ -48,9 +50,17 @@ void write_to_file(const GetParams& P,
                    const std::vector<double>& curve,
                    int species);
 
-void output_all(std::vector<int> FinalResults,int gridSize, const char * name2,const char * name3,
-                const char * name4, double Xmean, double alpha, double speciation,double samp, int SoftBorder, int richness, std::string emp_file_name, std::vector<double> curve, int replicate);
-
+void output_all(std::vector<int> FinalResults,
+                int gridSize,
+                const char * name2,
+                const char * name3,
+                const char * name4,
+                double Xmean,
+                double alpha,
+                double speciation,
+                double samp,
+                int SoftBorder,
+                int replicate);
 
 template <typename T>
 double calculateMean(const std::vector<T>& v);
@@ -58,14 +68,5 @@ template <typename T>
 std::vector<int> findMatches(const std::vector<T>& V, T target);
 template <typename T>
 std::vector <T> getUnique(const std::vector<T>& V);
-
-
-
-
-
-
-
-
-
 
 #endif /* defined(__SMC_Adriana__Adriana_simulation__) */

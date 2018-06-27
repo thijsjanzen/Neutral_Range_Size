@@ -14,17 +14,15 @@
 #include "Simulation.h"
 #include "GetParams.h"
 
-void macstart(const char * argv[]);
 void progressBar(double percent);
 
 void only_infer_number_species(const GetParams& P);
 void simulate_without_fitting(GetParams P);
 void fit_to_data(const GetParams& P);
 
-int main(int argc, const char * argv[]) {
+int main() {
 
 	//this is some MAC code that changes the working directory to the directory in which the executable is placed, can be commented away on windows/linux
-    macstart(argv);
 
 	//read parameters from parameter file
 	//the parameter file is named "config.ini" and contains the following parameters:
@@ -177,7 +175,7 @@ void fit_to_data(const GetParams& P) {
 
     // maximum number of iterations of the SMC algorithm
  //   int maxIter = 50;
-    int maxIter = 2; // for Travis
+    int maxIter = 1; // for Travis
 
     double sigma = 0.05;
 
@@ -338,18 +336,3 @@ void progressBar(double percent)
     std::cout.flush();
     return;
 }
-
-void macstart(const char * argv[])  {
-#ifdef __APPLE__
-    {
-        char *dirsep = strrchr(argv[0], '/');
-        if (dirsep != NULL) *dirsep = 0;
-        int changeDir = chdir(argv[0]);
-        std::cout << "Changing Dir: " << changeDir << "\n";
-        std::string cwd = getcwd(NULL, 0);
-        std::cout << cwd << "\n";
-        std::cout << "Starting simulation\n";
-    }
-#endif
-}
-

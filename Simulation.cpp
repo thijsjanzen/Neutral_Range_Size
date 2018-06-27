@@ -74,7 +74,7 @@ std::vector<double> doSimulation(particle candidate,
             std::cout << "\n\nERROR ERROR ERROR\n";
             std::cout << "descendant[0] outside result.size or speciation.size\n";
             std::cout << "ERROR ERROR ERROR\n\n";
-            std::vector<double> curve = calcCurve(result,n_lineages, numSpecies);
+            std::vector<double> curve = calcCurve(result, n_lineages, numSpecies);
             return curve;
         } else {
             result[descendant[0]] = species;
@@ -445,6 +445,7 @@ std::vector<double> readEmpiricalData(std::string file_name) {
 //***************************************************************************************************************************
 
 std::vector<double> calcCurve(const std::vector<int>& FinalResults,
+                              int gridSize,
                               int& numSpecies){
 	if(FinalResults[0] == -500) {
 		//pre-emptive exit

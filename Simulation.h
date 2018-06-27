@@ -21,7 +21,10 @@ std::vector<double> readEmpiricalData(std::string file_name);
 
 double calcFitness(std::vector<double> emp, std::vector<double> Sim);
 
-std::vector<double> calcCurve(const std::vector<int>& FinalResults, int gridSize, int& numSpecies);
+std::vector<double> calcCurve(const std::vector<int>& FinalResults,
+                              int gridSize,
+                              int& numSpecies);
+
 std::vector<double> doSimulation(particle candidate,
                                  const GetParams& P,
                                  int& numSpecies);

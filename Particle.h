@@ -23,29 +23,26 @@ struct theta
     double protractedNess;
     double sampling;
 
+    theta() : alpha(1.5),
+              Xmean(0.5),
+              speciationRate(1.0),
+              protractedNess(0.0),
+              sampling(1.0) {
 
-
-	theta() {
-		alpha = 1.5;
-		Xmean = 0.5;
-        speciationRate = 1.0;
-        protractedNess = 0.0;
-        sampling = 1.0;
 	}
 	
 	theta(double Alpha, double xMean,
           double specR, double tau,
-          double sample)  {
-		alpha = Alpha;
-		Xmean = xMean;
-        speciationRate = specR;
-        protractedNess = tau;
-        sampling = sample;
+          double sample) : alpha(Alpha),
+                           Xmean(xMean),
+                           speciationRate(specR),
+                           protractedNess(tau),
+                           sampling(sample) {
+
 	}
 	
 	//prior functions
-	void getFromPrior()
-	{
+	void getFromPrior() {
 		alpha = 1.01 + uniform() * (6 - 1.01);
 		Xmean = uniform() * 0.56;
         speciationRate = -5 + uniform() * 5; // 0.0001 to 1
@@ -73,11 +70,9 @@ struct theta
 
         return true;
     }
-
 	
 	std::vector<double> operator-(const theta& other);
-	
-	
+
 	void Perturb(double sigma);
 };
 
@@ -92,26 +87,22 @@ struct particle
 	
 	
 	
-	particle()
-	{
+    particle() : fitness(-1),
+                 weight(1),
+                 numSpecies(0) {
 		Params = theta();
-		fitness = -1;
-		weight = 1;
-        numSpecies = 0;
 	}
 	
-	particle(theta init)
+    particle(const theta& init) : Params(init),
+                                  fitness(-1),
+                                  weight(1),
+                                  numSpecies(0)
 	{
-		Params = init;
-		fitness = -1;
-		weight = 1;
-        numSpecies = 0;
 	}
 	
 	particle(const particle& other);
 	particle & operator=(const particle& other);
-	
-	
+
 	void getFromPrevious(const std::vector< particle >& P, double maxW);
 	void perturb(double sigma);
 	void calculateWeight(const std::vector<particle>& P, double sigma);
@@ -119,8 +110,7 @@ struct particle
 	
     void calcFitness(const std::vector<double>& emp, const std::vector<double>& Sim);
 	
-	void getFromPrior()
-	{
+	void getFromPrior() {
 		Params.getFromPrior();
 	}
 
@@ -129,6 +119,7 @@ struct particle
     }
 
 };
+
 bool file_exists(const std::string& file_name);
 void normalize(std::vector< particle >& P, double& maxW);
 
@@ -137,6 +128,5 @@ std::ostream& operator << (std::ostream& os, const particle& p);
 std::istream& operator >> (std::istream& is, theta& t);
 std::ostream& operator << (std::ostream& os, const theta& t);
 void readParticles(int t, std::vector<particle>& parts, int numberParticles);
-
 
 #endif /* defined(__SecondaryContact__Particle__) */

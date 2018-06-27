@@ -39,11 +39,11 @@ void initialize_vectors(std::vector<int>& index,
                         int n_lineages);
 
 void simulate_model(particle candidate,
-                    const std::vector<int>& position,
+                    std::vector<int>& position,
                     std::vector<int>& descendant,
                     std::vector<int>& result,
-                    const std::vector<int>& index,
-                    const std::vector<bool>& speciation,
+                    std::vector<int>& index,
+                    std::vector<bool>& speciation,
                     int& species,
                     const int& n_lineages);
 

@@ -34,16 +34,15 @@ void read_mask(std::vector<bool>& mask,
                int n_lineages);
 
 
-void initialize_vectors(std::string mask_file_name,
-                        std::vector<int>& index,
-                        std::vector<int>& result,
-                        std::vector<bool>& mask,
-                        std::vector<int>& position,
-                        std::vector<int>& descendant,
-                        double sampling,
-                        int& nExtraZeros,
-                        int n_lineages,
-                        bool custom_mask);
+void initialize_vectors(std::vector<int>& index,
+                       std::vector<int>& result,
+                       std::vector<bool>& mask,
+                       std::vector<int>& position,
+                       std::vector<int>& descendant,
+                       double sampling,
+                       int& nExtraZeros,
+                       int n_lineages,
+                       bool custom_mask);
 
 void simulate_model(particle candidate,
                     std::vector<int>& position,

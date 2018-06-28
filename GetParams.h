@@ -41,7 +41,7 @@ public:
 
     bool custom_mask;
     std::string mask_file_name;
-	
+    std::vector<bool> custom_mask_vector;
 };
 
 #endif //GETPARAMS_H_INCLUDED

@@ -47,6 +47,10 @@ int main(int argc, const char * argv[]) {
 
 	GetParams P;
 	P.readFromIni("config.ini");
+
+    if(P.custom_mask) {
+        read_mask(P.custom_mask_vector, P.mask_file_name, P.n_lineages);
+    }
 	
 	//hardcoded parameter values:
 	/*P.seed = 1;
@@ -179,8 +183,8 @@ void fit_to_data(const GetParams& P) {
 
 
     // maximum number of iterations of the SMC algorithm
- //   int maxIter = 50;
-    int maxIter = 1; // for Travis
+    int maxIter = 50;
+  //  int maxIter = 1; // for Travis
 
     double sigma = 0.05;
 
@@ -270,7 +274,7 @@ void fit_to_data(const GetParams& P) {
                 candidate.perturb(sigma); //change the values a little bit
             }
 
-            candidate.Params.sampling = P.sampling;
+            //candidate.Params.sampling = P.sampling;
 
             if(candidate.withinPrior()) {
                 // std::cout << candidate.Params << "\n";

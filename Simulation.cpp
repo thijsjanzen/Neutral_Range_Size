@@ -42,7 +42,11 @@ std::vector<double> doSimulation(particle candidate,
 	std::vector<int> index(n_lineages);
 	std::vector<int> result(n_lineages);
 	std::vector<bool> speciation(n_lineages);
-	std::vector<bool> mask; // mask where individuals can live
+    std::vector<bool> mask;
+    if(P.custom_mask) {
+        mask = P.custom_mask_vector;
+    }
+
 	int nExtraZeros = 0;
 
 	//initialize vectors
@@ -52,9 +56,14 @@ std::vector<double> doSimulation(particle candidate,
 	//      add sampling
 	//------------------------------------------
 
-    initialize_vectors(P.mask_file_name, index, result, mask,   position,
+    initialize_vectors(index, result, mask, position,
                        descendant, sampling, nExtraZeros,
                        n_lineages, P.custom_mask);
+
+    if(P.custom_mask) { //just to be sure that the mask was not modified
+        mask = P.custom_mask_vector;
+    }
+
 
 	//--------------------------------------------------------------------
 	//   end editing 20-04-2016
@@ -210,8 +219,7 @@ void simulate_model(particle candidate,
     return;
 }
 
-void initialize_vectors(std::string mask_file_name,
-                        std::vector<int>& index,
+void initialize_vectors(std::vector<int>& index,
                         std::vector<int>& result,
                         std::vector<bool>& mask,
                         std::vector<int>& position,
@@ -227,8 +235,7 @@ void initialize_vectors(std::string mask_file_name,
     }
 
     if(custom_mask == true) {
-        read_mask(mask, mask_file_name, n_lineages);
-        for (int i = 0; i < (int)mask.size(); ++i) {// synchronize the other linked vectors
+         for (int i = 0; i < (int)mask.size(); ++i) {// synchronize the other linked vectors
             if (mask[i] == true) {
                 if(uniform() <= sampling) {
                     position.push_back(i);
@@ -244,6 +251,7 @@ void initialize_vectors(std::string mask_file_name,
     }
 
     if(custom_mask == false) {
+        mask.clear();
         for (int i = 0; i < n_lineages; ++ i) {
             if(uniform() <= sampling) {
                 mask.push_back(true);
@@ -478,9 +486,14 @@ void read_mask(std::vector<bool>& mask,
 
     std::ifstream input_file(mask_file_name.c_str());
     while(!input_file.eof()) {
-        int temp;
-        input_file >> temp;
-        mask.push_back(temp);
+        int loc;
+        int mask_val;
+        input_file >> loc;
+        input_file >> mask_val;
+        mask.push_back(mask_val);
+        if(loc != mask.size()) {
+            std::cout << "ERROR in reading mask!\n";
+        }
     }
     while(mask.size() > n_lineages) {
         mask.pop_back(); // extra entries can occur due to weird eof behaviour.

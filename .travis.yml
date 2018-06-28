@@ -26,9 +26,9 @@ script:
   # Build and run
   - qmake
   - make
-  - ./Neutral_Range_Size
+ # - ./Neutral_Range_Size
   # Code coverage
 #  - ./get_code_cov.sh >/dev/null
 #  - codecov >/dev/null
-  # OCLint
+ #  OCLint
  # - ./do_oclint.sh

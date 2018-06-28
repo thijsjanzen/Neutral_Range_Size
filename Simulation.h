@@ -29,14 +29,21 @@ std::vector<double> doSimulation(particle candidate,
                                  const GetParams& P,
                                  int& numSpecies);
 
-void initialize_vectors(std::vector<int>& index,
+void read_mask(std::vector<bool>& mask,
+               std::string mask_file_name,
+               int n_lineages);
+
+
+void initialize_vectors(std::string mask_file_name,
+                        std::vector<int>& index,
                         std::vector<int>& result,
                         std::vector<bool>& mask,
                         std::vector<int>& position,
                         std::vector<int>& descendant,
                         double sampling,
                         int& nExtraZeros,
-                        int n_lineages);
+                        int n_lineages,
+                        bool custom_mask);
 
 void simulate_model(particle candidate,
                     std::vector<int>& position,
@@ -45,7 +52,9 @@ void simulate_model(particle candidate,
                     std::vector<int>& index,
                     std::vector<bool>& speciation,
                     int& species,
-                    const int& n_lineages);
+                    const int& n_lineages,
+                    bool custom_mask,
+                    const std::vector<bool>& mask);
 
 void write_to_file(const GetParams& P,
                    const std::vector<int>& result,
@@ -55,6 +64,7 @@ void write_to_file(const GetParams& P,
 
 void output_all(std::vector<int> FinalResults,
                 int gridSize,
+                const char * name1,
                 const char * name2,
                 const char * name3,
                 const char * name4,

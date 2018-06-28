@@ -10,7 +10,7 @@
 
 GetParams::GetParams() {
 	seed = 1;
-	std::string emp_file_name = "noPelagicEgg_HighMobility.csv";
+	emp_file_name = "noPelagicEgg_HighMobility.csv";
 	n_lineages = 5000;
 	softness = 0.0;
 	sampling = 0.8;
@@ -26,6 +26,9 @@ GetParams::GetParams() {
 	numParticles = 1000;
 	fitting = 1;
 	replicates = 100;
+
+    custom_mask = 0;
+    mask_file_name = "mask.txt";
 	
 }
 
@@ -47,13 +50,15 @@ void GetParams::readFromIni( const char * filename ) {
 				readNameValuePair( ss,  "emp_file_name", emp_file_name);
 				readNameValuePair( ss,  "n_lineages", n_lineages);
                 readNameValuePair( ss,  "numParticles",numParticles);
-                readNameValuePair( ss, "replicates",replicates);
-                readNameValuePair( ss, "fitting", fitting);
+                readNameValuePair( ss,  "replicates",replicates);
+                readNameValuePair( ss,  "fitting", fitting);
 				readNameValuePair( ss,  "speciationRate", speciationRate);
                 readNameValuePair( ss,  "protractedNess", protractedNess);
 				readNameValuePair( ss,  "alpha",alpha);
 				readNameValuePair( ss,  "Xmean",Xmean);
                 readNameValuePair( ss,  "sampling", sampling);
+                readNameValuePair( ss,  "custom_mask", custom_mask);
+                readNameValuePair( ss,  "mask_file_name", mask_file_name);
 	}
 }
 

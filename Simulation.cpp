@@ -52,9 +52,9 @@ std::vector<double> doSimulation(particle candidate,
 	//      add sampling
 	//------------------------------------------
 
-    initialize_vectors(index, result, mask,   position,
+    initialize_vectors(P.mask_file_name, index, result, mask,   position,
                        descendant, sampling, nExtraZeros,
-                       n_lineages);
+                       n_lineages, P.custom_mask);
 
 	//--------------------------------------------------------------------
 	//   end editing 20-04-2016
@@ -62,7 +62,7 @@ std::vector<double> doSimulation(particle candidate,
 
     simulate_model(candidate,
                    position, descendant, result, index, speciation,
-                   species, n_lineages);
+                   species, n_lineages, P.custom_mask, mask);
 
 	/****************************************************************************************
 	 PROCESSING THE DATA
@@ -89,7 +89,7 @@ std::vector<double> doSimulation(particle candidate,
     }
 
 	// addition 20-04-2016
-	int nZeros = ((int)speciation.size()-(species + nExtraZeros)); //CHECK 040714
+	int nZeros = ((int)speciation.size() - (species + nExtraZeros) ); //CHECK 040714
 	while(nZeros > 0){
 		for(int i = 0; i != (int)result.size(); ++i){
 			if(result[i] != -2) {
@@ -121,7 +121,9 @@ void simulate_model(particle candidate,
                     std::vector<int>& index,
                     std::vector<bool>& speciation,
                     int& species,
-                    const int& n_lineages) {
+                    const int& n_lineages,
+                    bool custom_mask,
+                    const std::vector<bool>& mask) {
 
     int remain_lineages = (int)position.size(); // will follow only sampled lineagues
     std::vector<double> recordYpos;
@@ -173,6 +175,11 @@ void simulate_model(particle candidate,
                 // If there are soft borders affecting probability of reproduction softness must be set > 0.0 (the proportion of the lattice where there is a decrease of reprod.)
                 if((Y1 > 0) && (Y1 <= (n_lineages-1))) { // is it still in the area, the sample must be from the whole result vector, does it need to be >=0??
                     birth = 0;
+                    if(custom_mask == true)  {
+                        if(mask[(int)Y1] == false) {
+                            birth = 1; // if you can't live there, birth doesn't happpen
+                        }
+                    }
                 }
             }
 
@@ -203,36 +210,58 @@ void simulate_model(particle candidate,
     return;
 }
 
-void initialize_vectors(std::vector<int>& index,
+void initialize_vectors(std::string mask_file_name,
+                        std::vector<int>& index,
                         std::vector<int>& result,
                         std::vector<bool>& mask,
                         std::vector<int>& position,
                         std::vector<int>& descendant,
                         double sampling,
                         int& nExtraZeros,
-                        int n_lineages) {
+                        int n_lineages,
+                        bool custom_mask) {
 
     for(int i = 0; i < (int)index.size(); i ++) {
         index[i] = -2;
         result[i] = -2;
     }
 
-    for (int i = 0; i < n_lineages; ++ i) {
-        if(uniform() <= sampling) {
-            mask.push_back(true);
-        } else {
-            mask.push_back(false);
-            nExtraZeros ++; // check later
+    if(custom_mask == true) {
+        read_mask(mask, mask_file_name, n_lineages);
+        for (int i = 0; i < (int)mask.size(); ++i) {// synchronize the other linked vectors
+            if (mask[i] == true) {
+                if(uniform() <= sampling) {
+                    position.push_back(i);
+                    descendant.push_back(i);
+                    index[i] = (int)position.size()-1;
+                } else {
+                    nExtraZeros++;
+                }
+            } else {
+                nExtraZeros++;
+            }
         }
     }
 
-    for (int i = 0; i < (int)mask.size(); ++i) {// synchronize the other linked vectors
-        if (mask[i] == true) {
-            position.push_back(i);
-            descendant.push_back(i);
-            index[i] = (int)position.size()-1;
+    if(custom_mask == false) {
+        for (int i = 0; i < n_lineages; ++ i) {
+            if(uniform() <= sampling) {
+                mask.push_back(true);
+            } else {
+                mask.push_back(false);
+                nExtraZeros ++; // check later
+            }
+        }
+
+        for (int i = 0; i < (int)mask.size(); ++i) {// synchronize the other linked vectors
+            if (mask[i] == true) {
+                position.push_back(i);
+                descendant.push_back(i);
+                index[i] = (int)position.size()-1;
+            }
         }
     }
+    return;
 }
 
 
@@ -242,6 +271,7 @@ void write_to_file(const GetParams& P,
                    int n_lineages,
                    const std::vector<double>& curve,
                    int species) {
+
     char sDataFileName1[80] = "";
     char sDataFileName2[80] = "";
     char sDataFileName3[80] = "";
@@ -253,17 +283,19 @@ void write_to_file(const GetParams& P,
     strncpy(sDataFileName2, sDataFileName,80); // Raw Metrics data
     strncpy(sDataFileName3, sDataFileName,80); // ICD of theoretical data
     strncpy(sDataFileName4, sDataFileName,80); // outcome results
+    const std::string DataName1 = std::string(sDataFileName1) + "Raw_results_vector.txt";
     const std::string DataName2 = std::string(sDataFileName2) + "Metric_Data.txt";
     const std::string DataName3 = std::string(sDataFileName3) + "ICD_Data.txt";
     const std::string DataName4 = std::string(sDataFileName4) + "Outcome_Data.txt";
 
-    //const char * name1 = DataName1.c_str();
+    const char * name1 = DataName1.c_str();
     const char * name2 = DataName2.c_str();
     const char * name3 = DataName3.c_str();
     const char * name4 = DataName4.c_str();
 
     output_all(result,
                n_lineages,
+               name1,
                name2,
                name3,
                name4,
@@ -440,6 +472,23 @@ std::vector<double> readEmpiricalData(std::string file_name) {
 	return output;
 }
 
+void read_mask(std::vector<bool>& mask,
+               std::string mask_file_name,
+               int n_lineages) {
+
+    std::ifstream input_file(mask_file_name.c_str());
+    while(!input_file.eof()) {
+        int temp;
+        input_file >> temp;
+        mask.push_back(temp);
+    }
+    while(mask.size() > n_lineages) {
+        mask.pop_back(); // extra entries can occur due to weird eof behaviour.
+    }
+    return;
+}
+
+
 //**********************************************************************************************************************************
 //														Function to make curve output (for graphs later)
 //***************************************************************************************************************************
@@ -580,6 +629,7 @@ std::vector<double> calcCurve(const std::vector<int>& FinalResults,
 
 void output_all(std::vector<int> FinalResults,
                 int gridSize,
+                const char * name1,
                 const char * name2,
                 const char * name3,
 				const char * name4,
@@ -591,7 +641,7 @@ void output_all(std::vector<int> FinalResults,
                 int replicate)
 
 {
-	//ofstream ofDataFile1(name1,ios_base::app);
+    std::ofstream ofDataFile1(name1, std::ios_base::app);
 	std::ofstream ofDataFile2(name2, std::ios_base::app);
 	std::ofstream ofDataFile3(name3, std::ios_base::app);
 	std::ofstream ofDataFile4(name4, std::ios_base::app);
@@ -599,6 +649,16 @@ void output_all(std::vector<int> FinalResults,
 	/**********************************************************************************************************
 	 OUTPUT & PRINTING
 	 ***********************************************************************************************************/
+
+    /**********************************************************************************************************
+     OUTPUT RAW Results vector
+     ***********************************************************************************************************/
+
+    for(auto it = FinalResults.begin(); it != FinalResults.end(); ++it) {
+        ofDataFile1 << (*it) << "\t";
+    }
+    ofDataFile1 << "\n";
+    ofDataFile1.close();
 
 	
 	/***************************************************************************************************************
@@ -680,6 +740,7 @@ void output_all(std::vector<int> FinalResults,
 	}
 
 	ofDataFile3.close();
+    ofDataFile4.close();
 
 	return;
 }

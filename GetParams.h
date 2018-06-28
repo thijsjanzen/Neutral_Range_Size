@@ -38,6 +38,9 @@ public:
 	int replicates;
 	std::string sDataFileName;
 	int focalReplicate;
+
+    bool custom_mask;
+    std::string mask_file_name;
 	
 };
 

@@ -289,14 +289,14 @@ void fit_to_data(const GetParams& P) {
                     if(iter > 0) {
                         candidate.calculateWeight(previousParticles, sigma); //calculate the weight of the particle
 
-                        if(isnan(candidate.weight)) {
-                            std::cout << "ERROR\t" << candidate << "\n";
-                        } else {
+                       // if(isnan(candidate.weight)) {
+                       //     std::cout << "ERROR\t" << candidate << "\n";
+                       // } else {
                             for(auto it = result.begin(); it != result.end(); ++it) {
                                 out_curve << (*it) << "\t";
                             }
                             out_curve << "\n";
-                        }
+                        //}
                     }
 
                     out_particle << candidate << "\n"; out_particle.flush();  //store the particle in a file

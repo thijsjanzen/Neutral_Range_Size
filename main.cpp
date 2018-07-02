@@ -28,44 +28,31 @@ int main(int argc, const char * argv[]) {
 	//this is some MAC code that changes the working directory to the directory in which the executable is placed, can be commented away on windows/linux
     macstart(argv);
 
-
+    GetParams P;
 	//read parameters from parameter file
 	//the parameter file is named "config.ini" and contains the following parameters:
-	//	seed = 2330
-	//	emp_file_name = noPelagicEgg_LowMobility.csv
-	//	n_lineages = 50000
-	//	softness = 0.0
-	//	sampling = 1.0
-	//	speciationRate = 0.0005
-	//	suboptimal = 0.0
-	//	numParticles = 1000
-	//	alpha = 0.5
-	//	Xmean = 0.5
-	//  abunSubop = 0.5
-	//  fitting = 0
-	//  replicates = 100
+    P.seed = 42;
+    P.emp_file_name = "Pel_mMob_ICD.csv";
+    P.n_lineages = 50000;
+    P.numParticles = 1000;
+    P.replicates = 100;
+    P.fitting = 0;
+    P.speciationRate = 0.0005;
+    P.protractedNess = 100;
+    P.alpha = 2;
+    P.Xmean = 0.01;
+    P.sampling = 1.0;
+    P.custom_mask = 0;
+    P.mask_file_name = "GEBTEP_reefsMask.txt"
 
-	GetParams P;
-	P.readFromIni("config.ini");
+
+    if(P.fitting != 0) {
+        P.readFromIni("config.ini");
+    }
 
     if(P.custom_mask) {
         read_mask(P.custom_mask_vector, P.mask_file_name, P.n_lineages);
     }
-	
-	//hardcoded parameter values:
-	/*P.seed = 1;
-	P.emp_file_name = "noPelagicEgg_LowMobility.csv";
-	P.n_lineages = 50000;
-	P.softness = 0.0;
-	P.sampling = 1.0;
-	P.speciationRate = 0.0005;
-	P.alpha = 3.0;
-	P.Xmean = 0.01;
-	P.replicates = 100;
-	P.fitting = 0;
-	P.re = 0.5;
-    P.ce = 7.5;
-	P.SoftBorder = 0;*/
 
     set_seed(P.seed);
 

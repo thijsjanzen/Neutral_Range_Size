@@ -37,21 +37,23 @@ int main(int argc, const char * argv[]) {
     P.numParticles = 1000;
     P.replicates = 100;
     P.fitting = 0;
-    P.speciationRate = 0.0005;
+    P.speciationRate = 1;
     P.protractedNess = 100;
-    P.alpha = 2;
-    P.Xmean = 0.01;
+    P.alpha = 3.0;
+    P.Xmean = 0.02;
     P.sampling = 1.0;
     P.custom_mask = 0;
-    P.mask_file_name = "GEBTEP_reefsMask.txt"
+	P.mask_file_name = "GEBTEP_reefsMask.txt";
 
 
     if(P.fitting != 0) {
         P.readFromIni("config.ini");
     }
 
-    if(P.custom_mask) {
-        read_mask(P.custom_mask_vector, P.mask_file_name, P.n_lineages);
+    if(P.custom_mask == 1) {
+        read_mask(P.custom_mask_vector,
+                  P.mask_file_name,
+                  P.n_lineages);
     }
 
     set_seed(P.seed);
@@ -104,10 +106,10 @@ void simulate_without_fitting(GetParams P) {
 
 
 
-    strncpy(sDataFileName1, sDataFileName,80); // Raw data
-    strncpy(sDataFileName2, sDataFileName,80); // Raw Metrics data
-    strncpy(sDataFileName3, sDataFileName,80); // ICD of theoretical data
-    strncpy(sDataFileName4, sDataFileName,80); // outcome results
+	strncpy(sDataFileName1, sDataFileName,80); // Raw data
+	strncpy(sDataFileName2, sDataFileName,80); // Raw Metrics data
+	strncpy(sDataFileName3, sDataFileName,80); // ICD of theoretical data
+	strncpy(sDataFileName4, sDataFileName,80); // outcome results
     const std::string DataName2 = std::string(sDataFileName2) + "Metric_Data.txt";
     const std::string DataName3 = std::string(sDataFileName3) + "ICD_Data.txt";
     const std::string DataName4 = std::string(sDataFileName4) + "Outcome_Data.txt";

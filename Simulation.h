@@ -19,7 +19,7 @@ double interpolate(double x, const std::vector< std::pair<double, double> >& tab
 
 std::vector<double> readEmpiricalData(std::string file_name);
 
-double calcFitness(std::vector<double> emp, std::vector<double> Sim);
+//double calcFitness(std::vector<double> emp, std::vector<double> Sim);
 
 std::vector<double> calcCurve(const std::vector<int>& FinalResults,
                               int gridSize,

@@ -484,7 +484,9 @@ void read_mask(std::vector<bool>& mask,
                std::string mask_file_name,
                int n_lineages) {
 
+    mask.clear();
     std::ifstream input_file(mask_file_name.c_str());
+    int cnt = 1;
     while(!input_file.eof()) {
         int loc;
         int mask_val;
@@ -492,7 +494,13 @@ void read_mask(std::vector<bool>& mask,
         input_file >> mask_val;
         mask.push_back(mask_val);
         if(loc != mask.size()) {
+            std::cout << loc << "\t" << mask_val << "\n";
             std::cout << "ERROR in reading mask!\n";
+        }
+        cnt++;
+        if(cnt > 2 * n_lineages) {
+
+            exit(0);
         }
     }
     while(mask.size() > n_lineages) {

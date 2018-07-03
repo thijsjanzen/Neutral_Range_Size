@@ -42,10 +42,8 @@ std::vector<double> doSimulation(particle candidate,
 	std::vector<int> index(n_lineages);
 	std::vector<int> result(n_lineages);
 	std::vector<bool> speciation(n_lineages);
-    std::vector<bool> mask;
-    if(P.custom_mask) {
-        mask = P.custom_mask_vector;
-    }
+    std::vector<bool> initialisation_mask;
+    std::vector<bool> viability_mask = P.custom_mask_vector;
 
 	int nExtraZeros = 0;
 
@@ -56,22 +54,17 @@ std::vector<double> doSimulation(particle candidate,
 	//      add sampling
 	//------------------------------------------
 
-    initialize_vectors(index, result, mask, position,
-                       descendant, sampling, nExtraZeros,
+    initialize_vectors(index, result, initialisation_mask, viability_mask,
+                       position, descendant, sampling, nExtraZeros,
                        n_lineages, P.custom_mask);
-
-    if(P.custom_mask) { //just to be sure that the mask was not modified
-        mask = P.custom_mask_vector;
-    }
 
 
 	//--------------------------------------------------------------------
 	//   end editing 20-04-2016
 	//-------------------------------------------------------------------
 
-    simulate_model(candidate,
-                   position, descendant, result, index, speciation,
-                   species, n_lineages, P.custom_mask, mask);
+    simulate_model(candidate, position, descendant, result, index, speciation,
+                   species, n_lineages, P.custom_mask, viability_mask);
 
 	/****************************************************************************************
 	 PROCESSING THE DATA
@@ -132,7 +125,7 @@ void simulate_model(particle candidate,
                     int& species,
                     const int& n_lineages,
                     bool custom_mask,
-                    const std::vector<bool>& mask) {
+                    const std::vector<bool>& viability_mask) {
 
     int remain_lineages = (int)position.size(); // will follow only sampled lineagues
     std::vector<double> recordYpos;
@@ -185,7 +178,7 @@ void simulate_model(particle candidate,
                 if((Y1 > 0) && (Y1 <= (n_lineages-1))) { // is it still in the area, the sample must be from the whole result vector, does it need to be >=0??
                     birth = 0;
                     if(custom_mask == true)  {
-                        if(mask[(int)Y1] == false) {
+                        if(viability_mask[(int)Y1] == false) {
                             birth = 1; // if you can't live there, birth doesn't happpen
                         }
                     }
@@ -221,7 +214,8 @@ void simulate_model(particle candidate,
 
 void initialize_vectors(std::vector<int>& index,
                         std::vector<int>& result,
-                        std::vector<bool>& mask,
+                        std::vector<bool>& initialisation_mask,
+                        const std::vector<bool>& viability_mask,
                         std::vector<int>& position,
                         std::vector<int>& descendant,
                         double sampling,
@@ -234,39 +228,42 @@ void initialize_vectors(std::vector<int>& index,
         result[i] = -2;
     }
 
+    initialisation_mask.clear();
+
     if(custom_mask == true) {
-         for (int i = 0; i < (int)mask.size(); ++i) {// synchronize the other linked vectors
-            if (mask[i] == true) {
+         for (int i = 0; i < (int)viability_mask.size(); ++i) {// synchronize the other linked vectors
+            if (viability_mask[i] == true) {
                 if(uniform() <= sampling) {
-                    position.push_back(i);
-                    descendant.push_back(i);
-                    index[i] = (int)position.size()-1;
+                    initialisation_mask.push_back(true);
                 } else {
-                    nExtraZeros++;
+                    initialisation_mask.push_back(false);
+                    nExtraZeros ++; // check later
                 }
             } else {
+                initialisation_mask.push_back(false);
                 nExtraZeros++;
+            }
+         }
+    }
+
+    if(custom_mask == false) {
+        for (int i = 0; i < n_lineages; ++ i) {
+            if(uniform() <= sampling) {
+                initialisation_mask.push_back(true);
+            } else {
+                initialisation_mask.push_back(false);
+                nExtraZeros ++; // check later
             }
         }
     }
 
-    if(custom_mask == false) {
-        mask.clear();
-        for (int i = 0; i < n_lineages; ++ i) {
-            if(uniform() <= sampling) {
-                mask.push_back(true);
-            } else {
-                mask.push_back(false);
-                nExtraZeros ++; // check later
-            }
-        }
 
-        for (int i = 0; i < (int)mask.size(); ++i) {// synchronize the other linked vectors
-            if (mask[i] == true) {
-                position.push_back(i);
-                descendant.push_back(i);
-                index[i] = (int)position.size()-1;
-            }
+
+    for (int i = 0; i < (int)initialisation_mask.size(); ++i) {// synchronize the other linked vectors
+        if (initialisation_mask[i] == true) {
+            position.push_back(i);
+            descendant.push_back(i);
+            index[i] = (int)position.size()-1;
         }
     }
     return;
@@ -287,10 +284,10 @@ void write_to_file(const GetParams& P,
 
     const char * sDataFileName = P.sDataFileName.c_str();
 
-    strncpy_s(sDataFileName1, sDataFileName,80); // Raw data
-	strncpy_s(sDataFileName2, sDataFileName,80); // Raw Metrics data
-	strncpy_s(sDataFileName3, sDataFileName,80); // ICD of theoretical data
-	strncpy_s(sDataFileName4, sDataFileName,80); // outcome results
+    strncpy(sDataFileName1, sDataFileName,80); // Raw data
+	strncpy(sDataFileName2, sDataFileName,80); // Raw Metrics data
+	strncpy(sDataFileName3, sDataFileName,80); // ICD of theoretical data
+	strncpy(sDataFileName4, sDataFileName,80); // outcome results
     const std::string DataName1 = std::string(sDataFileName1) + "Raw_results_vector.txt";
     const std::string DataName2 = std::string(sDataFileName2) + "Metric_Data.txt";
     const std::string DataName3 = std::string(sDataFileName3) + "ICD_Data.txt";

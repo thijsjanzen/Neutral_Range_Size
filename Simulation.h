@@ -19,8 +19,6 @@ double interpolate(double x, const std::vector< std::pair<double, double> >& tab
 
 std::vector<double> readEmpiricalData(std::string file_name);
 
-//double calcFitness(std::vector<double> emp, std::vector<double> Sim);
-
 std::vector<double> calcCurve(const std::vector<int>& FinalResults,
                               int gridSize,
                               int& numSpecies);
@@ -35,14 +33,15 @@ void read_mask(std::vector<bool>& mask,
 
 
 void initialize_vectors(std::vector<int>& index,
-                       std::vector<int>& result,
-                       std::vector<bool>& mask,
-                       std::vector<int>& position,
-                       std::vector<int>& descendant,
-                       double sampling,
-                       int& nExtraZeros,
-                       int n_lineages,
-                       bool custom_mask);
+                        std::vector<int>& result,
+                        std::vector<bool>& initialisation_mask,
+                        const std::vector<bool>& viability_mask,
+                        std::vector<int>& position,
+                        std::vector<int>& descendant,
+                        double sampling,
+                        int& nExtraZeros,
+                        int n_lineages,
+                        bool custom_mask);
 
 void simulate_model(particle candidate,
                     std::vector<int>& position,

@@ -9,7 +9,7 @@
 #include <cstring>
 #include <random>
 
-#include <unistd.h> //this is only for on macs!
+//#include <unistd.h> //this is only for on macs!
 
 #include "Simulation.h"
 #include "GetParams.h"
@@ -33,12 +33,12 @@ int main(int argc, const char * argv[]) {
 	//the parameter file is named "config.ini" and contains the following parameters:
     P.seed = 42;
     P.emp_file_name = "Pel_mMob_ICD.csv";
-    P.n_lineages = 50000;
+    P.n_lineages = 5;
     P.numParticles = 1000;
     P.replicates = 100;
     P.fitting = 0;
-    P.speciationRate = 1;
-    P.protractedNess = 100;
+    P.speciationRate = 0.05;
+    P.protractedNess = 10;
     P.alpha = 3.0;
     P.Xmean = 0.02;
     P.sampling = 1.0;
@@ -106,10 +106,10 @@ void simulate_without_fitting(GetParams P) {
 
 
 
-	strncpy(sDataFileName1, sDataFileName,80); // Raw data
-	strncpy(sDataFileName2, sDataFileName,80); // Raw Metrics data
-	strncpy(sDataFileName3, sDataFileName,80); // ICD of theoretical data
-	strncpy(sDataFileName4, sDataFileName,80); // outcome results
+	strncpy_s(sDataFileName1, sDataFileName,80); // Raw data
+	strncpy_s(sDataFileName2, sDataFileName,80); // Raw Metrics data
+	strncpy_s(sDataFileName3, sDataFileName,80); // ICD of theoretical data
+	strncpy_s(sDataFileName4, sDataFileName,80); // outcome results
     const std::string DataName2 = std::string(sDataFileName2) + "Metric_Data.txt";
     const std::string DataName3 = std::string(sDataFileName3) + "ICD_Data.txt";
     const std::string DataName4 = std::string(sDataFileName4) + "Outcome_Data.txt";

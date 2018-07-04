@@ -177,7 +177,7 @@ void simulate_model(particle candidate,
                 // If there are soft borders affecting probability of reproduction softness must be set > 0.0 (the proportion of the lattice where there is a decrease of reprod.)
                 if((Y1 > 0) && (Y1 <= (n_lineages-1))) { // is it still in the area, the sample must be from the whole result vector, does it need to be >=0??
                     birth = 0;
-                    if(custom_mask == true)  {
+                   if(custom_mask == true)  {
                         if(viability_mask[(int)Y1] == false) {
                             birth = 1; // if you can't live there, birth doesn't happpen
                         }
@@ -284,10 +284,10 @@ void write_to_file(const GetParams& P,
 
     const char * sDataFileName = P.sDataFileName.c_str();
 
-    strncpy(sDataFileName1, sDataFileName,80); // Raw data
-	strncpy(sDataFileName2, sDataFileName,80); // Raw Metrics data
-	strncpy(sDataFileName3, sDataFileName,80); // ICD of theoretical data
-	strncpy(sDataFileName4, sDataFileName,80); // outcome results
+	strncpy_s(sDataFileName1, sDataFileName,80); // Raw data
+	strncpy_s(sDataFileName2, sDataFileName,80); // Raw Metrics data
+	strncpy_s(sDataFileName3, sDataFileName,80); // ICD of theoretical data
+	strncpy_s(sDataFileName4, sDataFileName,80); // outcome results
     const std::string DataName1 = std::string(sDataFileName1) + "Raw_results_vector.txt";
     const std::string DataName2 = std::string(sDataFileName2) + "Metric_Data.txt";
     const std::string DataName3 = std::string(sDataFileName3) + "ICD_Data.txt";
@@ -347,7 +347,7 @@ std::vector<int> findMatches(const std::vector<T>& V, T target) {
 }
 
 
-//****************************************************** Interpolate function thijs********************************************************
+//****************************************************** Interpolate function thijs  ********************************************************
 
 double interpolate(double x,
                    const std::vector< std::pair<double, double> >& table){
@@ -356,7 +356,8 @@ double interpolate(double x,
 	// Check if x is out of bound
 	
 	if (x > table.back().first) return 0;
-	if (x < table[0].first) return 1;
+	if (x < table[0].first) return table[0].second;
+
 	std::vector<std::pair<double, double> >::const_iterator it, it2;
 	
 	it = std::lower_bound(table.begin(), table.end(), std::make_pair(x, -INF));

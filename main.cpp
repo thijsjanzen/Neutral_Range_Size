@@ -9,7 +9,10 @@
 #include <cstring>
 #include <random>
 
-//#include <unistd.h> //this is only for on macs!
+#ifdef __APPLE__
+    #include <unistd.h> //this is only for on macs!
+#endif
+
 
 #include "Simulation.h"
 #include "GetParams.h"
@@ -33,17 +36,17 @@ int main(int argc, const char * argv[]) {
 	//the parameter file is named "config.ini" and contains the following parameters:
     P.seed = 42;
     P.emp_file_name = "Pel_mMob_ICD.csv";
-    P.n_lineages = 5;
+    P.n_lineages = 50000;
     P.numParticles = 1000;
     P.replicates = 100;
     P.fitting = 0;
-    P.speciationRate = 0.05;
+    P.speciationRate = 0.0005;
     P.protractedNess = 10;
-    P.alpha = 3.0;
+    P.alpha = 2.0;
     P.Xmean = 0.02;
     P.sampling = 1.0;
-    P.custom_mask = 0;
-	P.mask_file_name = "GEBTEP_reefsMask.txt";
+    P.custom_mask = 1;
+	P.mask_file_name = "GEBTEP_reefsMask_fine.txt";
 
 
     if(P.fitting != 0) {

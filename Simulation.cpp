@@ -237,11 +237,9 @@ void initialize_vectors(std::vector<int>& index,
                     initialisation_mask.push_back(true);
                 } else {
                     initialisation_mask.push_back(false);
-                    nExtraZeros ++; // check later
                 }
             } else {
                 initialisation_mask.push_back(false);
-                nExtraZeros++;
             }
          }
     }
@@ -252,7 +250,7 @@ void initialize_vectors(std::vector<int>& index,
                 initialisation_mask.push_back(true);
             } else {
                 initialisation_mask.push_back(false);
-                nExtraZeros ++; // check later
+               // nExtraZeros ++; // check later
             }
         }
     }
@@ -264,6 +262,8 @@ void initialize_vectors(std::vector<int>& index,
             position.push_back(i);
             descendant.push_back(i);
             index[i] = (int)position.size()-1;
+        } else {
+            nExtraZeros++;
         }
     }
     return;

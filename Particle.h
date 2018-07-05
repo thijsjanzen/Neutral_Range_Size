@@ -80,13 +80,11 @@ struct theta
 //particle structure, stores parameter values, weight, and fit
 struct particle
 {
-	theta Params;
-	double weight;
 	double fitness;
+    double weight;
     int numSpecies;
-	
-	
-	
+    theta Params;
+
     particle() : fitness(-1),
                  weight(1),
                  numSpecies(0) {

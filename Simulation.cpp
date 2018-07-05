@@ -284,10 +284,10 @@ void write_to_file(const GetParams& P,
 
     const char * sDataFileName = P.sDataFileName.c_str();
 
-	strncpy_s(sDataFileName1, sDataFileName,80); // Raw data
-	strncpy_s(sDataFileName2, sDataFileName,80); // Raw Metrics data
-	strncpy_s(sDataFileName3, sDataFileName,80); // ICD of theoretical data
-	strncpy_s(sDataFileName4, sDataFileName,80); // outcome results
+	strncpy(sDataFileName1, sDataFileName,80); // Raw data
+	strncpy(sDataFileName2, sDataFileName,80); // Raw Metrics data
+	strncpy(sDataFileName3, sDataFileName,80); // ICD of theoretical data
+	strncpy(sDataFileName4, sDataFileName,80); // outcome results
     const std::string DataName1 = std::string(sDataFileName1) + "Raw_results_vector.txt";
     const std::string DataName2 = std::string(sDataFileName2) + "Metric_Data.txt";
     const std::string DataName3 = std::string(sDataFileName3) + "ICD_Data.txt";
